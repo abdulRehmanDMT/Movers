@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using static ViewModel.Enums;
 using static ViewModel.Utility;
@@ -41,6 +42,7 @@ namespace MoversApi.Services
                 message.Reciever = new MailboxAddress("Self", _notificationMetadata.Reciever);
                 message.Subject = "Welcome";
                 message.Content = "Hello World!";
+
                 MimeMessage mimeMessage = CreateMimeMessageFromEmailMessage(message);
 
                 using (SmtpClient smtpClient = new SmtpClient())
@@ -88,6 +90,43 @@ namespace MoversApi.Services
             return mimeMessage;
         }
 
+        private void CreateEmailPdf()
+        {
+            RenderViewToString("EmailTemplates/Estimate2018Front", new RevisionFormVM() {NetPrice=8888 });
+        }
+
+        private string RenderViewToString<T>(string filePath, T data)
+        {
+            string fileContent = "";
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                fileContent = ReplacePlaceHolder(data, File.ReadAllText(filePath));
+            }
+            
+            return fileContent;
+        }
+
+        private string ReplacePlaceHolder<T>(T data, string html)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    foreach (var prop in data.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+                    {
+                        html = html.Replace("{" + prop.Name + "}", $"{prop.GetValue(data, null)}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return html;
+
+        }
 
         public MemoryStream GetPdf()
         {
