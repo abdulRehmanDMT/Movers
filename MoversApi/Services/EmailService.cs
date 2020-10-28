@@ -42,6 +42,7 @@ namespace MoversApi.Services
                 message.Subject = "Welcome";
                 message.Content = "Hello World!";
                 MimeMessage mimeMessage = CreateMimeMessageFromEmailMessage(message);
+
                 using (SmtpClient smtpClient = new SmtpClient())
                 {
                     smtpClient.Connect(_notificationMetadata.SmtpServer,
