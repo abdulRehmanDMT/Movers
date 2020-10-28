@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Movers.Views.RevisionOpts">
+    <ContentPage.Content>
+        <Grid>
+            <ScrollView>
+                <StackLayout
+                    Spacing="15"
+                    Padding="10">
+                    <Label
+                        VerticalTextAlignment="Center"
+                        Text="NEW VISUAL BINDING ESTIMATE"
+                        HorizontalTextAlignment="Center"
+                        FontSize="Medium"
+                        TextColor="Black"/>
+                    <Frame 
+                        CornerRadius="0"
+                        HasShadow="False"
+                        BackgroundColor="Transparent"
+                        Padding="5">
+                        <StackLayout Spacing="2">
+                            <Label 
+                                TextColor="Black"
+                                Text="Reason for shipper requesting rescission" />
+                            <RadioButton 
+                                FontSize="Micro"
+                                Text="Shipper moving more items/weight then was first anticipated"
+                                CheckedChanged="RescissionReason_Changed"
+                                GroupName="rescissionReason" />
+                            <RadioButton 
+                                FontSize="Micro"
+                                Text="New location of final destination"
+                                CheckedChanged="RescissionReason_Changed"
+                                GroupName="rescissionReason" />
+                            <RadioButton 
+                                FontSize="Micro"
+                                Text="Other"
+                                CheckedChanged="RescissionReason_Changed"
+                                GroupName="rescissionReason" />
+                            <Label 
+                                x:Name="rescissionReason"
+                                FontSize="Micro"
+                                IsVisible="False"
+                                TextColor="Red"
+                                Text="Reason for shipper requesting rescission" />
+                        </StackLayout>
+                    </Frame>
+                    <Frame 
+                        CornerRadius="0"
+                        HasShadow="False"
+                        BackgroundColor="Transparent"
+                        Padding="5">
+                        <StackLayout Spacing="2">
+                            <Label 
+                                TextColor="Black"
+                                Text="Request for rescission and new estimate made" />
+                            <RadioButton 
+                                FontSize="Micro"
+                                Text="Revised total estimated charges was approved in totality in person/prior to loading"
+                                CheckedChanged="RescissionRequest_Changed"
+                                GroupName="rescissionRequest" />
+                            <RadioButton 
+                                FontSize="Micro"
+                                Text="By phone/prior to loading"
+                                CheckedChanged="RescissionRequest_Changed"
+                                GroupName="rescissionRequest" />
+                            <RadioButton 
+                                FontSize="Micro"
+                                Text="Other"
+                                CheckedChanged="RescissionRequest_Changed"
+                                GroupName="rescissionRequest" />
+                            <Label 
+                                x:Name="rescissionRequest"
+                                IsVisible="False"
+                                FontSize="Micro"
+                                TextColor="Red"
+                                Text="Reason for shipper requesting rescission" />
+                        </StackLayout>
+                    </Frame>
+
+                    <Button 
+                        Margin="0,20"
+                        BackgroundColor="Black"
+                        HorizontalOptions="CenterAndExpand"
+                        TextColor="White"
+                        Clicked="Submit_Clicked"
+                        Text="SUBMIT"/>
+                </StackLayout>
+            </ScrollView>
+            <StackLayout 
+                x:Name="indicatorLayout"
+                BackgroundColor="White"
+                IsVisible="False"
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="FillAndExpand">
+                <ActivityIndicator 
+                    x:Name="busyIndicator" 
+                    IsRunning="False"
+                    HeightRequest="60"
+                    WidthRequest="60"
+                    HorizontalOptions="CenterAndExpand"
+                    VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
