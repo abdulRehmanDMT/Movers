@@ -7,14 +7,14 @@ namespace MoversApi.ViewModels
 {
     public class RevisionFormVM
     {
-        public RevisionFormVM()
-        {
-            OriginDetail = new PlaceInfo();
-            DestinationDetail = new PlaceInfo();
-        }
-
-        public PlaceInfo OriginDetail { get; set; }
-        public PlaceInfo DestinationDetail { get; set; }
+        public string OriginName { get; set; }
+        public string OriginAddress { get; set; }
+        public string OriginState { get; set; }
+        public string OriginPhone { get; set; }
+        public string DestinationName { get; set; }
+        public string DestinationAddress { get; set; }
+        public string DestinationState { get; set; }
+        public string DestinationPhone { get; set; }
         public string RescindEstimate { get; set; }
         public string PriorCharges { get; set; }
         public double NewEstimate { get; set; }
@@ -27,13 +27,6 @@ namespace MoversApi.ViewModels
         public string AddedItemsDescription { get; set; }
         public string RescissionReason { get; set; }
         public string RescissionRequest { get; set; }
-    }
-
-    public class PlaceInfo
-    {
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string State { get; set; }
-        public string Phone { get; set; }
+        public string RecieverEmail { get; set; }
     }
 }

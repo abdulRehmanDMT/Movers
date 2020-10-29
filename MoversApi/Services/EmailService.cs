@@ -3,8 +3,11 @@ using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MoversApi.ViewModels;
 using Syncfusion.Drawing;
+using Syncfusion.HtmlConverter;
 using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
+using Syncfusion.Pdf.HtmlToPdf;
+using Syncfusion.Pdf.Parsing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +30,8 @@ namespace MoversApi.Services
 
         public EmailService(IConfiguration configuration, NotificationMetadata notificationMetadata)
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzExMjM0QDMxMzgyZTMyMmUzMGJNZUF1RytQcUFUbFJuWEhoMWlLWi96eTh5U25IVEpuRVJWMWNtbGozU0E9");
+
             this.configuration = configuration;
             _notificationMetadata = notificationMetadata;
         }
@@ -38,12 +43,13 @@ namespace MoversApi.Services
             try
             {
                 EmailMessage message = new EmailMessage();
-                message.Sender = new MailboxAddress("Self", _notificationMetadata.Sender);
-                message.Reciever = new MailboxAddress("Self", _notificationMetadata.Reciever);
-                message.Subject = "Welcome";
-                message.Content = "Hello World!";
+                message.Sender = new MailboxAddress("MOVE US TO RELOCTION", _notificationMetadata.Sender);
+                message.Reciever = new MailboxAddress("MOVE US TO RELOCTION", _notificationMetadata.Reciever);
+                message.Subject = "Revised Estimate";
+                message.Content = "Interstate Revised Written Estimate";
 
-                MimeMessage mimeMessage = CreateMimeMessageFromEmailMessage(message);
+                string html = CreateEmailPdf(revisionFormVM);
+                MimeMessage mimeMessage = CreateMimeMessageFromEmailMessage(message, html);
 
                 using (SmtpClient smtpClient = new SmtpClient())
                 {
@@ -68,7 +74,7 @@ namespace MoversApi.Services
             return response;
         }
 
-        private MimeMessage CreateMimeMessageFromEmailMessage(EmailMessage message)
+        private MimeMessage CreateMimeMessageFromEmailMessage(EmailMessage message, string html)
         {
             MimeMessage mimeMessage = new MimeMessage();
             mimeMessage.From.Add(message.Sender);
@@ -76,23 +82,21 @@ namespace MoversApi.Services
             mimeMessage.Subject = message.Subject;
             //mimeMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
 
-
             var builder = new BodyBuilder { HtmlBody = message.Content };
 
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                builder.Attachments.Add("DemoPDF.pdf", GetPdf().ToArray());
+                builder.Attachments.Add("RevisedEstimate.pdf", GetPdf(html).ToArray());
             }
 
             mimeMessage.Body = builder.ToMessageBody();
 
-
             return mimeMessage;
         }
 
-        private void CreateEmailPdf()
+        private string CreateEmailPdf(RevisionFormVM revisionFormVM)
         {
-            RenderViewToString("EmailTemplates/Estimate2018Front", new RevisionFormVM() {NetPrice=8888 });
+            return RenderViewToString("EmailTemplates/Estimate2018Front.html", revisionFormVM);
         }
 
         private string RenderViewToString<T>(string filePath, T data)
@@ -128,59 +132,38 @@ namespace MoversApi.Services
 
         }
 
-        public MemoryStream GetPdf()
+        public MemoryStream GetPdf(string html)
         {
-            PdfDocument document = new PdfDocument();
+            HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter(HtmlRenderingEngine.WebKit);
 
-            //Add a page to the document
-            PdfPage page = document.Pages.Add();
+            WebKitConverterSettings settings = new WebKitConverterSettings();
 
-            //Create PDF graphics for the page
-            PdfGraphics graphics = page.Graphics;
+            //Set WebKit path
+            settings.WebKitPath = @"../../QtBinariesDotNetCore/";
+            settings.Margin = new Syncfusion.Pdf.Graphics.PdfMargins {  All = 30 };
+            settings.PdfPageSize = new SizeF(512, 692);
+            settings.WebKitViewPort = new Size(800, 0);
+            //Assign WebKit settings to HTML converter
+            htmlConverter.ConverterSettings = settings;
 
-            //Set the standard font
-            PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
+            //Convert URL to PDF
 
-            //Draw the text
-            graphics.DrawString("Hello World!!!", font, PdfBrushes.Black, new PointF(0, 0));
+            PdfDocument document = htmlConverter.Convert(html,"");
 
-            //Saving the PDF to the MemoryStream
+            string filePath = "D:\\DemoProjects\\Movers\\MoversApi\\temp\\RevisedEstimate_back.pdf";
+
+            FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            PdfLoadedDocument loadedDocument = new PdfLoadedDocument(fileStream);
+
+            //Save and close the PDF document 
             MemoryStream stream = new MemoryStream();
 
-            //document.Save(stream);
-
-            ////Set the position as '0'.
-            //stream.Position = 0;
-
-            ////Download the PDF document in the browser
-            //FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
-
-            //fileStreamResult.FileDownloadName = "Sample.pdf";
-
-
-
-
-
-            //Get the loaded form.
-
-            //PdfForm loadedForm = document.Form;
-
-            ////Get the loaded text box field and fill it.
-
-            //PdfLoadedTextBoxField loadedTextBoxField = loadedForm.Fields[0] as PdfLoadedTextBoxField;
-
-            //loadedTextBoxField.Text = "First Name";
-
-            //Save the modified document.
+            PdfDocumentBase.Merge(document, loadedDocument);
 
             document.Save(stream);
 
-
-
-
+            document.Close(true);
             return stream;
-
-
         }
     }
 }

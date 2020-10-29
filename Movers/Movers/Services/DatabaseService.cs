@@ -12,9 +12,9 @@ namespace Movers.Services
     {
         private readonly HttpServices client;
         //public const string BaseUrl = "http://192.168.1.102/MoversApi/";
-        public const string BaseUrl = "http://172.16.2.109/MoversApi/";
+        //public const string BaseUrl = "http://172.16.2.109/MoversApi/";
         //public const string BaseUrl = "http://185.15.244.235/HWRateApi/";
-        //public const string BaseUrl = "http://3.21.206.147/";
+        public const string BaseUrl = "http://3.21.206.147/";
 
         public DatabaseService()
         {

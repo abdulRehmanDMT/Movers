@@ -40,14 +40,14 @@ namespace Movers.Views
         {
             try
             {
-                revisionForm.OriginDetail.Name = originName.Text;
-                revisionForm.OriginDetail.Address = originAddress.Text;
-                revisionForm.OriginDetail.State = originState.Text;
-                revisionForm.OriginDetail.Phone = originPhone.Text;
-                revisionForm.DestinationDetail.Name = destName.Text;
-                revisionForm.DestinationDetail.Address = destAddress.Text;
-                revisionForm.DestinationDetail.State = destState.Text;
-                revisionForm.DestinationDetail.Phone = destPhone.Text;
+                revisionForm.OriginName = originName.Text;
+                revisionForm.OriginAddress = originAddress.Text;
+                revisionForm.OriginState = originState.Text;
+                revisionForm.OriginPhone = originPhone.Text;
+                revisionForm.DestinationName = destName.Text;
+                revisionForm.DestinationAddress = destAddress.Text;
+                revisionForm.DestinationState = destState.Text;
+                revisionForm.DestinationPhone = destPhone.Text;
                 revisionForm.RescindEstimate = rescindEstimate.Text;
                 revisionForm.PriorCharges = priorCharges.Text;
 

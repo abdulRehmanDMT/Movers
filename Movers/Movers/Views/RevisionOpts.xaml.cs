@@ -50,7 +50,7 @@ namespace Movers.Views
 
                 if (response.Status == ResponseStatus.OK)
                 {
-
+                    await Shell.Current.GoToAsync("//RevisionForm", true);
                 }
             }
         }
@@ -69,6 +69,11 @@ namespace Movers.Views
         {
             try
             {
+                revisionForm.RecieverEmail = recieverEmail.Text;
+
+                recieverEmailWrapper.HasError = false;
+                recieverEmailWrapper.ErrorText = null;
+
                 rescissionReason.IsVisible = false;
                 rescissionReason.Text = null;
 
@@ -90,6 +95,10 @@ namespace Movers.Views
                             case "RescissionRequest":
                                 rescissionRequest.IsVisible = true;
                                 rescissionRequest.Text = failure.ErrorMessage;
+                                break;
+                            case "RecieverEmail":
+                                recieverEmailWrapper.HasError = true;
+                                recieverEmailWrapper.ErrorText = failure.ErrorMessage;
                                 break;
                         }
                     }
